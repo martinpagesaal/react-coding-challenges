@@ -1,27 +1,29 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import DiscoverBlock from './DiscoverBlock/components/DiscoverBlock';
 import '../styles/_discover.scss';
+import { getNewReleases, getPlaylist, getCategories} from "../../../common/api/spootify";
 
-export default class Discover extends Component {
-  constructor() {
-    super();
+function Discover() {
+  const [newReleases, setNewReleases] = useState([]);
+  const [playlists, setPlaylist] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-    this.state = {
-      newReleases: [],
-      playlists: [],
-      categories: []
-    };
-  }
+  React.useState(_ => {
+    getNewReleases()
+        .then(items => setNewReleases(items));
+    getPlaylist()
+        .then(items => setPlaylist(items));
+    getCategories()
+        .then(items => setCategories(items));
 
-  render() {
-    const { newReleases, playlists, categories } = this.state;
-
-    return (
+  })
+  return (
       <div className="discover">
         <DiscoverBlock text="RELEASED THIS WEEK" id="released" data={newReleases} />
         <DiscoverBlock text="FEATURED PLAYLISTS" id="featured" data={playlists} />
         <DiscoverBlock text="BROWSE" id="browse" data={categories} imagesKey="icons" />
       </div>
-    );
-  }
+  );
 }
+
+export default Discover;
